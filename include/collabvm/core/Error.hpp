@@ -10,8 +10,6 @@
 
 namespace collabvm::core {
 
-	// this isn't great, so I might replace it? idk
-
 	/**
 	 * An error category. Provides functions for working
 	 * with a single error code type.
@@ -25,7 +23,7 @@ namespace collabvm::core {
 	struct ErrorCategory;
 
 	/**
-	 * Mix-in type for implementing ErrorCategory.
+	 * Mixin type for implementing ErrorCategory.
 	 */
 	template<class EC, class T = ErrorCategory<EC>>
 	struct ErrorCategoryMixin {
@@ -50,10 +48,10 @@ namespace collabvm::core {
 	 * An error. Light-weight wrapper over an error code.
 	 *
 	 * Error category storage is handled as a part of the type, so all Error(s)
-	 * are literal and trivial, and only sizeof(EC).
+	 * are literal and only sizeof(EC), instead of needing to store a pointer
+	 * and pay the price of multiple virtual function calls.
 	 *
-	 * This type *can* be directly used if desired, however it's recommended
-	 * to use it as part of an Expected error argument.
+	 * This type *can* be directly used, but typically is used indirectly via core::Result<>.
 	 *
 	 * \tparam EC 		Error code type.
 	 * \tparam Category The error category.
@@ -91,5 +89,21 @@ namespace collabvm::core {
 
 	template<class EC>
 	Error(EC code) -> Error<EC>;
+
+	/**
+	 * Generic CollabVM-wide error codes.
+	 */
+	enum class GenericError {
+		Ok = 0x0,						///< No error.
+		MemoryAllocationFailure ///< Error allocating memory.
+	};
+
+	template<>
+	struct ErrorCategory<GenericError> : ErrorCategoryMixin<GenericError> {
+		constexpr static const char* ErrorMessages[] {
+			"No error",
+			"Error allocating memory"
+		};
+	};
 
 } // namespace collabvm::core

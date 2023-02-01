@@ -15,21 +15,6 @@
 
 namespace collabvm::core {
 
-	// TODO(lily): While this is a core-wide error, I don't think
-	// 	<Result.hpp> is the right spot for it
-
-	enum class GenericError {
-		Ok,						///< No error.
-		MemoryAllocationFailure ///< Error allocating memory.
-	};
-
-	template<>
-	struct ErrorCategory<GenericError> : ErrorCategoryMixin<GenericError> {
-		constexpr static const char* ErrorMessages[] = {
-			"No error",
-			"Error allocating memory"
-		};
-	};
 
 	template<class T, class E>
 	using Expected = std::expected<T, E>;
@@ -48,7 +33,7 @@ namespace collabvm::core {
 #define COLLABVM_CORE_MUST(expr)           \
 	({                                     \
 		auto _result = (expr);             \
-		COLLABVM_CHECK(!expr.has_error()) \
+		COLLABVM_CHECK(!expr.has_error())  \
 		return std::move(_result).value(); \
 	})
 
