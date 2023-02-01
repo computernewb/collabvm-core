@@ -21,10 +21,10 @@ namespace collabvm::core {
 
 	// TODO find a better spot for this
 
-#define COLLABVM_VERIFY(expr)                                              \
+#define COLLABVM_CHECK(expr)                                              \
 	do {                                                                   \
 		if(!(expr)) [[unlikely]] {                                         \
-			::collabvm::core::Panic("COLLABVM_VERIFY(" #expr ") failed."); \
+			::collabvm::core::Panic("COLLABVM_CHECK(" #expr ") failed."); \
 			__builtin_unreachable();                                       \
 		}                                                                  \
 	} while(0)
@@ -41,19 +41,6 @@ namespace collabvm::core {
 	#define COLLABVM_ASSERT(expr)
 #endif
 
-#define COLLABVM_TRY(expr)                    \
-	({                                        \
-		auto _result = (expr);                \
-		if(!_result.has_value()) [[unlikely]] \
-			return std::move(_result).error(); \
-		return std::move(_result).value();     \
-	})
 
-#define COLLABVM_MUST(expr)                \
-	({                                     \
-		auto _result = (expr);             \
-		COLLABVM_VERIFY(!expr.has_error()) \
-		return std::move(_result).value();  \
-	})
 
 } // namespace collabvm::core

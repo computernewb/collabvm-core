@@ -5,6 +5,8 @@ add_library(collabvm_core
 
 		ThrowException.cpp
 		Panic.cpp
+
+		graphics/Framebuffer.cpp
 		)
 
 target_include_directories(collabvm_core PUBLIC ${PROJECT_SOURCE_DIR}/include)

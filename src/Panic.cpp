@@ -11,7 +11,8 @@
 #include <spdlog/spdlog.h>
 
 #include <cstdlib>
-#include <boost/stacktrace.hpp>
+
+#include <stacktrace>
 
 namespace collabvm::core {
 
@@ -19,14 +20,14 @@ namespace collabvm::core {
 		spdlog::error("Panic @ {}:{} : {}", loc.file_name(), loc.line(), message);
 
 		spdlog::error("Stack trace:");
-		for(const auto& frame : boost::stacktrace::stacktrace()) {
-			if(!frame.name().empty())
+		for(const auto& frame : std::stacktrace()) {
+			if(!frame.description().empty())
 				if(!frame.source_file().empty())
-					spdlog::error("    {} ({:p}), @ {}:{}", frame.name(), frame.address(), frame.source_file(), frame.source_line());
+					spdlog::error("    {} ({:p}), @ {}:{}", frame.description(), std::bit_cast<void*>(frame.native_handle()), frame.source_file(), frame.source_line());
 				else
-					spdlog::error("    {} ({:p})", frame.name(), frame.address());
+					spdlog::error("    {} ({:p})", frame.description(), std::bit_cast<void*>(frame.native_handle()));
 			else
-				spdlog::error("    {:p}", frame.address());
+				spdlog::error("    {:p}", std::bit_cast<void*>(frame.native_handle()));
 		}
 
 		std::quick_exit(1);

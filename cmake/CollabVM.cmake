@@ -4,10 +4,16 @@
 # and misc. options
 function(collabvm_core_target target)
 	target_compile_definitions(${target} PRIVATE "$<$<CONFIG:DEBUG>:COLLABVM_CORE_DEBUG>")
-	target_include_directories(${target} PRIVATE ${PROJECT_SOURCE_DIR}/src)
-	target_compile_features(${target} PUBLIC cxx_std_20)
+	target_compile_features(${target} PUBLIC cxx_std_23)
 
-	set(_COLLABVM_CORE_COMPILE_ARGS -Wall -Wextra -Werror -fno-exceptions)
+	if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
+		# Clang does not implicitly support sized deallocation and needs
+		# another compiler argument; this ends up breaking a place in
+		# <stacktrace> which seems to require it. GCC does do the right thing tbf
+		set(_COLLABVM_CORE_COMPILE_ARGS -Wall -Wextra -Werror -fsized-deallocation)
+	else()
+		set(_COLLABVM_CORE_COMPILE_ARGS -Wall -Wextra -Werror)
+	endif()
 
 	# default compile options to the core compile flags
 	target_compile_options(${target} PRIVATE ${_COLLABVM_CORE_COMPILE_ARGS})

@@ -44,6 +44,14 @@ namespace collabvm::core {
 		struct Size {
 			T width;
 			T height;
+
+			/**
+			 * Returns the linear size, which is the product of
+			 * `width * height`. May need an additional stride or pixel size.
+			 */
+			constexpr T Linear() const {
+				return width * height;
+			}
 		};
 
 		template<class T>
@@ -53,11 +61,25 @@ namespace collabvm::core {
 			T width;
 			T height;
 
+			constexpr Rect(T x, T y, T w, T h) :
+				x(x),
+				y(y),
+				width(w),
+				height(h) {
+			}
+
+			constexpr Rect(Size<T> size) :
+				x(0),
+				y(0),
+				width(size.width),
+				height(size.height) {
+			}
+
 			/**
 			 * Get the origin coordinate as a point.
 			 * \return a Point<T> with the origin.
 			 */
-			constexpr Point<T> GetOrigin() const {
+			constexpr auto GetOrigin() const {
 				return Point<T> { .x = x, .y = y };
 			}
 
@@ -65,8 +87,18 @@ namespace collabvm::core {
 			 * Get the size of this rect.
 			 * \return a Point<T> which contains the calculated size of the rect
 			 */
-			constexpr Point<T> GetSize() const {
-				return Point<T> { .x = width, .y = height };
+			constexpr auto GetSize() const {
+				return Size<T> { .width = width, .height = height };
+			}
+
+			constexpr bool InBounds(const Rect& other) {
+				if(x < other.x || x + other.width > other.x + other.width)
+					return false;
+
+				if(y < other.y || x + other.height > other.y + other.height)
+					return false;
+
+				return true;
 			}
 
 			// more methods.
@@ -107,8 +139,8 @@ namespace collabvm::core {
 	template<class T>
 	using Weak = std::weak_ptr<T>;
 
-	using detail::Rect;
 	using detail::Point;
+	using detail::Rect;
 	using detail::Size;
 
 } // namespace collabvm::core

@@ -16,20 +16,34 @@ namespace collabvm::core {
 	 * An error category. Provides functions for working
 	 * with a single error code type.
 	 *
-	 * Needs to be specialized.
+	 * Needs to be specialized using ErrorMixin which will implement
+	 * the required static member functions for you.
 	 *
 	 * \tparam EC
 	 */
 	template<class EC>
-	struct ErrorCategory {
+	struct ErrorCategory;
+
+	/**
+	 * Mix-in type for implementing ErrorCategory.
+	 */
+	template<class EC, class T = ErrorCategory<EC>>
+	struct ErrorCategoryMixin {
 		using CodeType = EC;
 
-		// This class should not be created.
-		constexpr ErrorCategory() = delete;
+		constexpr ErrorCategoryMixin() = delete;
 
-		//static constexpr const char* Message(EC);
-		//static EC OkSymbol();
-		//static bool Ok(EC);
+		static constexpr const char* Message(CodeType code) {
+			return T::ErrorMessages[static_cast<u32>(code)];
+		}
+
+		static constexpr CodeType OkSymbol() {
+			return EC::Ok;
+		}
+
+		static bool Ok(CodeType code) {
+			return code == OkSymbol();
+		}
 	};
 
 	/**
