@@ -7,7 +7,7 @@ function(collabvm_core_target target)
 	target_include_directories(${target} PRIVATE ${PROJECT_SOURCE_DIR}/src)
 	target_compile_features(${target} PUBLIC cxx_std_20)
 
-	set(_COLLABVM_CORE_COMPILE_ARGS -Wall -Wextra -Werror -Wno-restrict -fno-exceptions)
+	set(_COLLABVM_CORE_COMPILE_ARGS -Wall -Wextra -Werror -fno-exceptions)
 
 	# default compile options to the core compile flags
 	target_compile_options(${target} PRIVATE ${_COLLABVM_CORE_COMPILE_ARGS})

@@ -21,6 +21,7 @@
 
 #include <boost/asio/strand.hpp>
 #include <boost/asio/system_executor.hpp>
+#include <boost/asio/deferred.hpp>
 
 namespace collabvm::core {
 
@@ -46,6 +47,7 @@ namespace collabvm::core {
 	 * \see Boost.Asio CompletionToken
 	 */
 	constexpr inline auto use_tuple_awaitable = net::as_tuple(net::use_awaitable_t<ExecutorType> {});
+	constexpr inline auto use_tuple_deferred = net::as_tuple(net::deferred);
 
 	/**
 	 * Awaitable type (configured for the current executor)

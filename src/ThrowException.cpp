@@ -7,6 +7,7 @@
 //
 
 // This file overrides Boost.ThrowException calls to Panic() when it's called.
+// This is used because we build Boost.Asio with exceptions disabled.
 
 #include <boost/assert/source_location.hpp>
 #include <exception>
